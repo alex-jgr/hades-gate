@@ -1,0 +1,27 @@
+{
+  "name": "hellgate",
+  "version": "1.0.0",
+  "description": "A webdevelopment server proxy",
+  "keywords": [
+    "proxy",
+    "server",
+    "for",
+    "web",
+    "development"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "cerberus"
+  },
+  "license": "Coffeeware",
+  "author": "Alex J Gr",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "set-course": "node index.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}

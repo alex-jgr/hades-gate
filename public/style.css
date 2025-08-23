@@ -1,0 +1,103 @@
+body, header, form, div {
+    display: flex;
+}
+
+body {
+    height: 100dvh;
+    margin: 0;
+    padding: 1rem;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    flex-direction: column;
+    justify-content: stretch;
+    box-sizing: border-box;
+}
+
+header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    justify-content: space-around;
+    font-family: Tahoma;
+    color: #343a40;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.form {
+    flex-direction: column;
+    align-self: center;
+    align-items: stretch;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    gap: 1rem;
+}
+
+.input-group {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+
+.input-group:hover {
+    box-shadow: 0 0 5px #ccc;
+}
+
+.action-group {
+    border: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.form input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    font-size: 16px;
+}
+.form label {
+    padding: 0.5rem 1rem;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form button {
+    padding: 1rem 2rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    font-size: 16px;
+    align-self: center;
+    cursor: pointer;
+}
+.form i {
+    font-size: 12px;
+}
+
+#errors, #log-entries {
+    max-height: 100px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+#errors {
+    color: red;
+}

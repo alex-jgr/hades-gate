@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hell Gate Proxy</title>
+        <link rel="icon" href="/favicon.ico">
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Knock! Knock!</h1>
+        </header>
+        <div class="content">
+            <div class="container">
+                <pre id="errors"></pre>
+            </div>
+            <div class="container">
+                <form method="post" action="/open" class="form">
+                    <div class="input-group">
+                        <label for="remoteHost">Host (Destination IP / Domain)</label>
+                        <input name="remoteHost"
+                            id="remoteHost"
+                            type="text"
+                            placeholder="Required"
+                            required
+                        />
+                    </div>
+                    <div class="input-group">
+                        <label for="localPort">Localhost Port</label>
+                        <input name="localPort"
+                            id="localPort"
+                            type="number"
+                            placeholder="Defaults to 3000"
+                        />
+                    </div>
+                    <div class="input-group">
+                        <label for="remotePort">Destination HTTP Port</label>
+                        <input name="remotePort"
+                            id="remotePort"
+                            type="number"
+                            placeholder="Defaults to 3000"
+                        />
+                    </div>
+                    <div class="input-group">
+                        <label for="webSocketPort">Destination WebSockets Port
+                            <br/><i>It's what usually makes the browser reload</i>
+                        </label>
+                        <input name="webSocketPort"
+                            id="webSocketPort"
+                            type="number"
+                            placeholder="Defaults to 5173"
+                        />
+                    </div>
+                    <div class="input-group action-group">
+                        <button type="submit">Begin</button>
+                    </div>
+                </form>
+            </div>
+            <div class="container">
+                <pre id="log-entries"></pre>
+            </div>
+        </div>
+        <script type="text/javascript" src="index.js"></script>
+    </body>
+</html>
