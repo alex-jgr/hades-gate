@@ -19,17 +19,19 @@ getParams = (body) => {
 
   body.split('&').forEach(param => {
     const [key, value] = param.split('=');
-    params[key] = decodeURIComponent(value);
+    const decodedValue = decodeURIComponent(value);
+    params[key] = decodedValue.length ? decodedValue : undefined;
   });
 
   return params;
 };
 
-exports.getParams = getParams;
-exports.getPostBody = getPostBody;
-
-exports.getPostParams = async (req) => {
+getPostParams = async (req) => {
   const body = await getPostBody(req)
 
   return getParams(body);
 };
+
+exports.getParams = getParams;
+exports.getPostBody = getPostBody;
+exports.getPostParams = getPostParams;

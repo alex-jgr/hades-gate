@@ -1,5 +1,5 @@
 {
-  "name": "hellgate",
+  "name": "hades-gate",
   "version": "1.0.0",
   "description": "A webdevelopment server proxy",
   "keywords": [
@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "cerberus"
+    "url": "https://github.com/alex-jgr/hades-gate.git"
   },
   "license": "Coffeeware",
   "author": "Alex J Gr",
@@ -19,6 +19,7 @@
   "main": "index.js",
   "scripts": {
     "set-course": "node index.js",
+    "open": "node index.js --with-saved-settings",
     "test": "test"
   },
   "dependencies": {

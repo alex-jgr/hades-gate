@@ -3,12 +3,24 @@ const fs = require("fs");
 const path = require("path");
 const ui = require('./cerberus');
 const inputs = require('./inputs');
+const gate = require('./gate');
 
+/**
+ * Control panel port.
+ */
 let PORT = 8888;
 
 process.argv.forEach((val) => {
   if (val.includes('--port=')) {
     PORT = parseInt(val.split('=')[1]);
+  }
+
+  // Alternatively start the proxy right away with settings.json or defaults, without the web panel.
+  if (val.includes('--with-saved-settings')) {
+    const settings = JSON.parse(fs.readFileSync('settings.json', 'utf8'));
+    gate.prepare(settings).open((proxy) => {
+      console.log(`Proxy started. All requests from ${proxy.protocol}:\\${proxy.localHost}:${proxy.localPort} will be redirected to ${proxy.protocol}://${proxy.remoteHost}:${proxy.remotePort}`);
+    });
   }
 });
 
@@ -17,7 +29,8 @@ const routes = {
   "/index.html": ui.main,
   "/open": ui.open,
   "/logs": ui.logs,
-  "/errors": ui.getErrors
+  "/errors": ui.getErrors,
+  "/settings": ui.getSettings
 };
 
 const contentType = {
@@ -39,7 +52,6 @@ const server = http.createServer(async (req, res) => {
   if (action) {
     req.params = await inputs.getPostParams(req);
     req.query = inputs.getParams(query);
-    console.debug('[] req:', req.url);
     action(req, res);
   } else {
     const staticFile = path.join(__dirname, 'public', req.url);
@@ -57,5 +69,6 @@ const server = http.createServer(async (req, res) => {
 
 // Start the server
 server.listen(PORT, () => {
-  console.log(`Gate keeper started running on http://localhost:${PORT}`);
+  console.log(`\x1b[33mYou reached the gates of hell.\nIn front of them Cerberus stays angry and tired, breathing hardly with somke coming out of all its nostrils.\nYou can see its eyes smoldering like ember as he turns one of his heads towards you, with its hair all dirty of ash, its fangs washed in blood\nbut somehow you feel welcome, convinced that you'll set your destination and move forward embracing your hard labor.\nPlease proceed\n\x1b[34mhttp://localhost:${PORT}`);
+  console.log("\x1b[0m");
 });

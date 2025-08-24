@@ -1,9 +1,13 @@
 const http = require('http');
+const https = require('https');
+const path = require('path');
+const fs = require('fs');
 const ws = require('ws');
 
 class ProxyServer {
   constructor() {
     this.settings = {
+      protocol: 'https',
       localHost: 'localhost',
       localPort: 3000,
       remoteHost: null,
@@ -39,7 +43,7 @@ class ProxyServer {
 
   prepare(settings) {
     Object.entries(settings).forEach(([key, value]) => {
-      this.setSetting(key, value);
+      if (value) this.setSetting(key, value);
     });
 
     if (!this.settings.remoteHost) {
@@ -49,24 +53,59 @@ class ProxyServer {
     return this;
   }
 
-  open() {
+  open(callback) {
     if (!this.errors.length) {
       this.startHttpProxy();
       this.startWebSocketProxy();
+      if (callback) callback(this.settings);
     } else {
       this.errors.push('Failed to start proxies');
     }
   }
 
+  getHttpProxyOptions(protocol) {
+    const options = {};
+
+    if (protocol === 'https') {
+      // Generated with:
+      // openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout certs/privkey.pem -out certs/fullchain.pem -subj "//CN=localhost"
+
+      options.key = fs.readFileSync(path.join(__dirname, 'certs/privkey.pem'));
+      options.cert = fs.readFileSync(path.join(__dirname, 'certs/fullchain.pem'));
+      options.minVersion = 'TLSv1.2';
+      options.ciphers = [
+        'ECDHE-ECDSA-AES128-GCM-SHA256',
+        'ECDHE-RSA-AES128-GCM-SHA256',
+        'ECDHE-ECDSA-AES256-GCM-SHA384',
+        'ECDHE-RSA-AES256-GCM-SHA384'
+      ].join(':');
+      options.honorCipherOrder = true;
+    }
+
+    return options;
+  }
+
   startHttpProxy() {
-    this.httpProxy = http.createServer((req, res) => {
-      http.request({
-        hostname: this.settings.remoteHost,
+    const { protocol } = this.settings;
+    const remote = protocol === 'https' ? https : http;
+    const local = protocol === 'https' ? https : http;
+    const httpProxyOptions = this.getHttpProxyOptions(protocol);
+
+    this.httpProxy = local.createServer(httpProxyOptions, (req, res) => {
+
+      const requestData = {
+        host: this.settings.remoteHost,
         port: this.settings.remotePort,
         path: req.url,
         method: req.method,
-        headers: req.headers
-      }, (proxyRes) => {
+        headers: req.headers,
+        protocol: this.settings.protocol + ':',
+        rejectUnauthorized: false,
+        requestCert: false,
+        agent: new https.Agent()
+      };
+
+      remote.request(requestData, (proxyRes) => {
         res.writeHead(proxyRes.statusCode, proxyRes.headers);
         proxyRes.pipe(res);
       }).end();
@@ -84,6 +123,8 @@ class ProxyServer {
 
   startWebSocketProxy() {
     const { localHost,remoteHost, webSocketPort } = this.settings;
+
+    console.debug('[] Trying to start ws server on port: ', webSocketPort);
 
     this.wsProxy = new ws.WebSocketServer({
       port: webSocketPort
