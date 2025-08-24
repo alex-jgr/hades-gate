@@ -90,6 +90,12 @@ class ProxyServer {
     const remote = protocol === 'https' ? https : http;
     const local = protocol === 'https' ? https : http;
     const httpProxyOptions = this.getHttpProxyOptions(protocol);
+    const agent = new remote.Agent({
+      keepAlive: true,
+      keepAliveMsecs: 5000,
+      maxSockets: 100,
+      maxFreeSockets: 20
+    });
 
     this.httpProxy = local.createServer(httpProxyOptions, (req, res) => {
 
@@ -102,14 +108,27 @@ class ProxyServer {
         protocol: this.settings.protocol + ':',
         rejectUnauthorized: false,
         requestCert: false,
-        agent: new https.Agent()
+        agent
       };
 
-      remote.request(requestData, (proxyRes) => {
+      const proxyReq = remote.request(requestData, (proxyRes) => {
         res.writeHead(proxyRes.statusCode, proxyRes.headers);
         proxyRes.pipe(res);
-      }).end();
+      });
+
+      req.pipe(proxyReq);
+
+      proxyReq.on('error', (err) => {
+        res.writeHead(502);
+        res.end('Proxy request error');
+      });
+
+      req.on('error', () => proxyReq.destroy());
+      res.on('error', () => proxyReq.destroy());
     });
+
+    this.httpProxy.keepAliveTimeout = 5000;
+    this.httpProxy.headersTimeout = 6000;
 
     this.httpProxy.listen(this.settings.localPort, () => {
       this.logs.push(`HTTP proxy started on ${this.settings.localHost}:${this.settings.localPort}`);

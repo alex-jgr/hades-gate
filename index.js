@@ -19,7 +19,7 @@ process.argv.forEach((val) => {
   if (val.includes('--with-saved-settings')) {
     const settings = JSON.parse(fs.readFileSync('settings.json', 'utf8'));
     gate.prepare(settings).open((proxy) => {
-      console.log(`Proxy started. All requests from ${proxy.protocol}:\\${proxy.localHost}:${proxy.localPort} will be redirected to ${proxy.protocol}://${proxy.remoteHost}:${proxy.remotePort}`);
+      console.log(`Proxy started. All requests from ${proxy.protocol}://${proxy.localHost}:${proxy.localPort} will be redirected to ${proxy.protocol}://${proxy.remoteHost}:${proxy.remotePort}`);
     });
   }
 });
