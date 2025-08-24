@@ -4,7 +4,7 @@
 git clone git@github.com:alex-jgr/hellgate.git
 ```
 
-2. Run 
+2. Run
 
 ```
 npm install
@@ -27,3 +27,8 @@ npm run set-course
 
 6. When you press the Begin button in the control panel you will be ready to use localhost:3000 as a proxy to your all mighty powerful machine.
 
+7. Alternatively, if you have a settings.json file in your home directory, you can use the following command to start the proxy right away, without a control panel:
+
+```
+npm run open
+```
