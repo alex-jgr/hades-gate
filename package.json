@@ -1,7 +1,7 @@
 {
   "name": "hades-gate",
   "version": "1.0.0",
-  "description": "A webdevelopment server proxy",
+  "description": "A web development server proxy",
   "keywords": [
     "proxy",
     "server",
